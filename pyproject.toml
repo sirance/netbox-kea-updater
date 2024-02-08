@@ -19,7 +19,7 @@ dependenices = [
 Homepage = "https://github.com/sirance/netbox-kea-updater"
 
 [project.scripts]
-netbox_kea_updater = "netbox_kea_updater.netbox_kea_updater:cli
+netbox_kea_updater = "netbox_kea_updater.netbox_kea_updater:cli"
 
 [tool.hatch.version]
 path = "src/netbox_kea_updater/__about__.py"
