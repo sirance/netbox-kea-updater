@@ -5,7 +5,7 @@ build-backend = "hatchling.build"
 [project]
 name = "netboxk-kea-updater"
 dynamic = ["version"]
-authors = [{name = "Simon Rance", email="sirance@gmail.com"},]
+authors = [{name = "Simon Rance", email=""},]
 readme = "README.md"
 requires-python = ">=3.8"
 license = "MIT"
@@ -26,3 +26,6 @@ path = "src/netbox_kea_updater/__about__.py"
 
 [tool.hatch.build]
 sources = ["src"]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/netbox_kea_updater"]
