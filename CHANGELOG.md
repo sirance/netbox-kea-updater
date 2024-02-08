@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 0.0.3
+
+* Fixing typos in pyproject.toml
+
+* Imporving output for lease updates
+
 ## 0.0.2
 
 * Including pyproject.toml

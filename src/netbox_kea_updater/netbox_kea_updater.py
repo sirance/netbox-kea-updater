@@ -58,8 +58,8 @@ def processleases(ctx, netbox_url, netbox_token, kea_url, kea_port, remove_old):
         leasetime = lease.cltt
         lease_cltt = datetime.fromtimestamp(leasetime)
         if ctx.obj['VERBOSE']:
-            print(f"Lease for {lease.ip_address }: "
-                  "valid until {lease_cltt} UTC")
+            print('Lease for {}: valid until {} UTC'
+                  .format(lease.ip_address, lease_cltt))
         parser = Dhcp4Parser(config=server.dhcp4.cached_config)
         kea_subnet = parser.get_subnet(id=lease.subnet_id)
         subnet = kea_subnet.subnet.split('/')[-1]
