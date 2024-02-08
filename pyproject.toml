@@ -9,7 +9,7 @@ authors = [{name = "Simon Rance", email=""},]
 readme = "README.md"
 requires-python = ">=3.8"
 license = "MIT"
-dependenices = [
+dependencies = [
     "pynetbox~=7.0.1",
     "click~=8.0.1",
     "pykeadhcp~=0.6.0"
