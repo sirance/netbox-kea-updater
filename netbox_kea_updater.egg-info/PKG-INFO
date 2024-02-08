@@ -1,0 +1,11 @@
+Metadata-Version: 2.1
+Name: netbox-kea-updater
+Version: 0.0.1
+Summary: Read leases from Kea DHCP4 API, and add to netbox IPAM
+Home-page: https://github.com/sirance/netbox-kea-updater
+Author: Simon Rance
+Author-email: sirance@gmail.com
+License: MIT
+Classifier: Programming Language :: Python :: 3
+Classifier: Operating System :: OS Independent
+Description-Content-Type: text/markdown

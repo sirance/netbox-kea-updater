@@ -1,0 +1,11 @@
+# Python
+*.pyc
+.egg-info
+__pycache__
+.venv
+
+# IDEs
+.vscode
+
+# MacOS
+.DS_Store
