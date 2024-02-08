@@ -1,3 +1,0 @@
-click~=8.0
-pykeadhcp~=0.6.0
-pynetbox~=7.0.0

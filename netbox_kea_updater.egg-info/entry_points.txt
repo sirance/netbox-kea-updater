@@ -1,2 +1,0 @@
-[console_scripts]
-netbox_kea_updater = netbox_kea_updater.netbox_kea_updater:cli
