@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 0.0.4
+
+* Added getting vrf info from prefix
+
 ## 0.0.3
 
 * Fixing typos in pyproject.toml
