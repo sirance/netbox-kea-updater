@@ -63,16 +63,18 @@ def processleases(ctx, netbox_url, netbox_token, kea_url, kea_port, remove_old):
         parser = Dhcp4Parser(config=server.dhcp4.cached_config)
         kea_subnet = parser.get_subnet(id=lease.subnet_id)
         subnet = kea_subnet.subnet.split('/')[-1]
+        prefix = nb.ipam.prefixes.get(prefix=kea_subnet.subnet)
         ip_prefixed = lease.ip_address + '/' + subnet
         try:
             nb_ip_address = nb.ipam.ip_addresses.get(address=lease.ip_address)
             if nb_ip_address is None:
                 if ctx.obj['VERBOSE']:
-                    print(f"IP address: {lease.ip_address}"
+                    print(f"IP address: {lease.ip_address} "
                           "missing from netbox, adding...")
                 nb.ipam.ip_addresses.create(
                     address=ip_prefixed,
                     description="Added from Kea DHCP",
+                    vrf=prefix.vrf.id,
                     dns_name=lease.hostname,
                     custom_fields={'dhcp_lease': str(lease_cltt),
                                    'dhcp_hwaddress':
