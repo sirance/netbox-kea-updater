@@ -86,9 +86,12 @@ def processleases(ctx, netbox_url, netbox_token, kea_url, kea_port, remove_old):
                 if ctx.obj['VERBOSE']:
                     print(nb_ip_address.custom_fields['dhcp_lease'])
                     print(lease_cltt)
-                nb_datetime = datetime.strptime(
-                    nb_ip_address.custom_fields['dhcp_lease'],
-                    format_string)
+                if nb_ip_address.custom_fields['dhcp_lease'] is None:
+                    nb_datetime = "0"
+                else:
+                    nb_datetime = datetime.strptime(
+                        nb_ip_address.custom_fields['dhcp_lease'],
+                        format_string)
                 if nb_datetime != lease_cltt:
                     if ctx.obj['VERBOSE']:
                         print("Lease times differ updating netbox")
