@@ -97,13 +97,13 @@ def processleases(ctx, netbox_url, netbox_token, kea_url, kea_port, netbox_dns_m
             custom_fields = {'dhcp_lease': str(lease_cltt),
                             'dhcp_hwaddress':
                             str(lease.hw_address.upper()), 
-                            'disable_ip_manage': False
+                            'ipaddress_dns_disabled': False
                             }
         elif dns_manage == "disable":
             custom_fields = {'dhcp_lease': str(lease_cltt),
                             'dhcp_hwaddress':
                             str(lease.hw_address.upper()), 
-                            'disable_ip_manage': True
+                            'ipaddress_dns_disabled': True
                             }
         try:
             nb_ip_address = nb.ipam.ip_addresses.get(address=lease.ip_address)
