@@ -50,6 +50,7 @@ def processleases(ctx, netbox_url, netbox_token, kea_url, kea_port, netbox_dns_m
 
     # Check whether to allow Netbox DNS plugin to manage records for IP addresses
     netbox_status = nb.status()
+    lease_cltt = ""
     # First check is whether we even have netbox dns plugin running:
     if "netbox_dns" in netbox_status['plugins']:
         print("netbox_dns plugin found")
