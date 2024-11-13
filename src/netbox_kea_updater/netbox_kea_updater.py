@@ -50,35 +50,23 @@ def processleases(ctx, netbox_url, netbox_token, kea_url, kea_port, netbox_dns_m
 
     # Check whether to allow Netbox DNS plugin to manage records for IP addresses
     netbox_status = nb.status()
-    lease_cltt = ""
-    # First check is whether we even have netbox dns plugin running:
+
     if "netbox_dns" in netbox_status['plugins']:
         print("netbox_dns plugin found")
         # netbox_dns plugin is running, so now check the input variable
         if netbox_dns_manage:
             if ctx.obj['VERBOSE']:
                 print("allowing netbox DNS to manage record")
-            custom_fields = {'dhcp_lease': str(lease_cltt),
-                            'dhcp_hwaddress':
-                            str(lease.hw_address.upper()), 
-                            'disable_ip_manage': False
-                            }
+            dns_manage="enable"
         else:
             if ctx.obj['VERBOSE']:
                 print("netbox DNS record management disabled")
-            custom_fields = {'dhcp_lease': str(lease_cltt),
-                            'dhcp_hwaddress':
-                            str(lease.hw_address.upper()), 
-                            'disable_ip_manage': True
-                            }
+            dns_manage="disable"
     else:
         # netbox dns plugins was not found, so not including the custom field
         if ctx.obj['VERBOSE']:
             print("netbox DNS plugin not found, ignoring options")
-        custom_fields = {'dhcp_lease': str(lease_cltt),
-                        'dhcp_hwaddress':
-                        str(lease.hw_address.upper())
-                        }
+        dns_manage="not_installed"
 
     # Read current leases from Kea DHCP
     if ctx.obj['VERBOSE']:
@@ -100,6 +88,23 @@ def processleases(ctx, netbox_url, netbox_token, kea_url, kea_port, netbox_dns_m
         subnet = kea_subnet.subnet.split('/')[-1]
         prefix = nb.ipam.prefixes.get(prefix=kea_subnet.subnet)
         ip_prefixed = lease.ip_address + '/' + subnet
+        if dns_manage == "not_installed":
+            custom_fields = {'dhcp_lease': str(lease_cltt),
+                            'dhcp_hwaddress':
+                            str(lease.hw_address.upper())
+                        }
+        elif dns_manage == "enable":
+            custom_fields = {'dhcp_lease': str(lease_cltt),
+                            'dhcp_hwaddress':
+                            str(lease.hw_address.upper()), 
+                            'disable_ip_manage': False
+                            }
+        elif dns_manage == "disable":
+            custom_fields = {'dhcp_lease': str(lease_cltt),
+                            'dhcp_hwaddress':
+                            str(lease.hw_address.upper()), 
+                            'disable_ip_manage': True
+                            }
         try:
             nb_ip_address = nb.ipam.ip_addresses.get(address=lease.ip_address)
             if nb_ip_address is None:
