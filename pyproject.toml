@@ -10,8 +10,8 @@ readme = "README.md"
 requires-python = ">=3.8"
 license = "MIT"
 dependencies = [
-    "pynetbox~=7.0.1",
-    "click~=8.0.1",
+    "pynetbox~=7.4",
+    "click~=8.1",
     "pykeadhcp~=0.6.0"
 ]
 
