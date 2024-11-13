@@ -28,11 +28,14 @@ def cli(ctx=None, verbose=None):
               help='URL for accessing KEA DHCP4 API', required=True)
 @click.option('--kea-port', envvar='KEA_PORT',
               help='PORT for accessing KEA DHCP4 API', required=True)
+@click.option('--netbox-dns-manage/--no-netbox-dns-manage',
+              help='Whether to allow Netbox DNS plugin to manage record',
+              default=True, required=False)
 @click.option('--remove-old/--no-remove-old',
               help='Remove IP from netbox when there is no longer a lease',
               default=False, required=False)
 @click.pass_context
-def processleases(ctx, netbox_url, netbox_token, kea_url, kea_port, remove_old):
+def processleases(ctx, netbox_url, netbox_token, kea_url, kea_port, netbox_dns_manage, remove_old):
     # Connect to NetBox
     nb = pynetbox.api(
             netbox_url,
@@ -44,6 +47,26 @@ def processleases(ctx, netbox_url, netbox_token, kea_url, kea_port, remove_old):
 
     format_string = "%Y-%m-%d %H:%M:%S"
     kea_ips = []
+
+    # Check whether to allow Netbox DNS plugin to manage records for IP addresses
+    netbox_status = nb.status()
+
+    if "netbox_dns" in netbox_status['plugins']:
+        print("netbox_dns plugin found")
+        # netbox_dns plugin is running, so now check the input variable
+        if netbox_dns_manage:
+            if ctx.obj['VERBOSE']:
+                print("allowing netbox DNS to manage record")
+            dns_manage="enable"
+        else:
+            if ctx.obj['VERBOSE']:
+                print("netbox DNS record management disabled")
+            dns_manage="disable"
+    else:
+        # netbox dns plugins was not found, so not including the custom field
+        if ctx.obj['VERBOSE']:
+            print("netbox DNS plugin not found, ignoring options")
+        dns_manage="not_installed"
 
     # Read current leases from Kea DHCP
     if ctx.obj['VERBOSE']:
@@ -65,6 +88,23 @@ def processleases(ctx, netbox_url, netbox_token, kea_url, kea_port, remove_old):
         subnet = kea_subnet.subnet.split('/')[-1]
         prefix = nb.ipam.prefixes.get(prefix=kea_subnet.subnet)
         ip_prefixed = lease.ip_address + '/' + subnet
+        if dns_manage == "not_installed":
+            custom_fields = {'dhcp_lease': str(lease_cltt),
+                            'dhcp_hwaddress':
+                            str(lease.hw_address.upper())
+                        }
+        elif dns_manage == "enable":
+            custom_fields = {'dhcp_lease': str(lease_cltt),
+                            'dhcp_hwaddress':
+                            str(lease.hw_address.upper()), 
+                            'ipaddress_dns_disabled': False
+                            }
+        elif dns_manage == "disable":
+            custom_fields = {'dhcp_lease': str(lease_cltt),
+                            'dhcp_hwaddress':
+                            str(lease.hw_address.upper()), 
+                            'ipaddress_dns_disabled': True
+                            }
         try:
             nb_ip_address = nb.ipam.ip_addresses.get(address=lease.ip_address)
             if nb_ip_address is None:
@@ -76,9 +116,7 @@ def processleases(ctx, netbox_url, netbox_token, kea_url, kea_port, remove_old):
                     description="Added from Kea DHCP",
                     vrf=prefix.vrf.id,
                     dns_name=lease.hostname,
-                    custom_fields={'dhcp_lease': str(lease_cltt),
-                                   'dhcp_hwaddress':
-                                   str(lease.hw_address.upper())},
+                    custom_fields=custom_fields,
                     status='dhcp'
                 )
             else:
@@ -100,9 +138,7 @@ def processleases(ctx, netbox_url, netbox_token, kea_url, kea_port, remove_old):
                         'address': nb_ip_address.address,
                         'description': 'Updated from Kea DHCP',
                         'dns_name': lease.hostname,
-                        'custom_fields': {'dhcp_lease': str(lease_cltt),
-                                          'dhcp_hwaddress':
-                                          str(lease.hw_address.upper())},
+                        'custom_fields': custom_fields,
                         'status': 'dhcp'
                     }])
                 else:
