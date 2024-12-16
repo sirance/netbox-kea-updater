@@ -158,13 +158,20 @@ def processleases(ctx, netbox_url, netbox_token, kea_url, kea_port, netbox_dns_m
                 if ctx.obj['VERBOSE']:
                     print(f"IP address: {nb_ip}"
                           "no longer leased removing from netbox.")
+
                 x = nb.ipam.ip_addresses.get(address=i.address)
-                try:
-                    x.delete()
+                if x.custom_fields['dhcp_reservation_hw_address'] is None:
                     if ctx.obj['VERBOSE']:
-                        print(f"deleted ip record: {x}")
-                except pynetbox.RequestError as e:
-                    print(e.error)
+                        print("No DHCP reservation found, safe to delete")
+                    try:
+                        x.delete()
+                        if ctx.obj['VERBOSE']:
+                            print(f"deleted ip record: {x}")
+                    except pynetbox.RequestError as e:
+                        print(e.error)
+                else:
+                    if ctx.obj['VERBOSE']:
+                        print(" DHCP reservation found, skipping deletion")
         if ctx.obj['VERBOSE']:
             print("Completing check...")
 

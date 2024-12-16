@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 0.0.7
+
+* Check for dhcp reservation, and don't delete ip if lease is expired
+
 ## 0.0.4
 
 * Added getting vrf info from prefix
