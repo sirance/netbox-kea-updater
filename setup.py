@@ -27,9 +27,9 @@ setup(
         "Operating System :: OS Independent",
     ],
     install_requires=[
-        'click~=8.1',
+        'click~=8.3',
         'pykeadhcp~=0.6.0',
-        'pynetbox~=7.4',
+        'pynetbox~=7.5',
             ],
     package_data={
     },

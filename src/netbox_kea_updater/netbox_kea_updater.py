@@ -28,6 +28,10 @@ def cli(ctx=None, verbose=None):
               help='URL for accessing KEA DHCP4 API', required=True)
 @click.option('--kea-port', envvar='KEA_PORT',
               help='PORT for accessing KEA DHCP4 API', required=True)
+@click.option('--kea-username', envvar='KEA_USERNAME',
+              help='Username for accessing KEA DHCP4 API', required=True)
+@click.option('--kea-password', envvar='KEA_PASSWORD',
+              help='Password for accessing KEA DHCP4 API', required=True)
 @click.option('--netbox-dns-manage/--no-netbox-dns-manage',
               help='Whether to allow Netbox DNS plugin to manage record',
               default=True, required=False)
@@ -35,7 +39,7 @@ def cli(ctx=None, verbose=None):
               help='Remove IP from netbox when there is no longer a lease',
               default=False, required=False)
 @click.pass_context
-def processleases(ctx, netbox_url, netbox_token, kea_url, kea_port, netbox_dns_manage, remove_old):
+def processleases(ctx, netbox_url, netbox_token, kea_url, kea_port, kea_username, kea_password, netbox_dns_manage, remove_old):
     # Connect to NetBox
     nb = pynetbox.api(
             netbox_url,
@@ -43,7 +47,7 @@ def processleases(ctx, netbox_url, netbox_token, kea_url, kea_port, netbox_dns_m
     )
 
     # Connect to the Kea Agent endpoint
-    server = Kea(host=kea_url, port=kea_port)
+    server = Kea(host=kea_url, port=kea_port, use_basic_auth=True, username=kea_username, password=kea_password)
 
     format_string = "%Y-%m-%d %H:%M:%S"
     kea_ips = []

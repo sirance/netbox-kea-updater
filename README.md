@@ -40,6 +40,8 @@ The parameters used in this script are as follows:
 | --netbox-token | NETBOX_TOKEN | An api token for netbox, with appropiate IPAM permissions | yes |
 | --kea-url | KEA_URL | The full URL for Kea API | yes |
 | --kea-port | KEA_URL | The port number for Kea API | yes |
+| --kea-username | KEA_USERNAME | The user name for Kea API | yes |
+| --kea-password | KEA_PASSWORD | The password for Kea API | yes |
 | --(no-)verbose | | Enable versbose mode in the script | no |
 | --(no-)-netbox-dns-manage | | Whether to allow Netbox DNS plugin to manage record | no (defaults to manage) |
 | --(no-)remove-old | | Whether to remove IP Addresses from netbox, if a lease no longer exists for it.| no (defaults to not removing) |
