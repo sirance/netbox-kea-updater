@@ -1,6 +1,6 @@
 from datetime import datetime
-from pykeadhcp import Kea
-from pykeadhcp.parsers.dhcp4 import Dhcp4Parser
+from pyisckea import Kea
+from pyisckea.parsers.dhcp4 import Dhcp4Parser
 import pynetbox
 import click
 
