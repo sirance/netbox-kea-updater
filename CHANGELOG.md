@@ -1,4 +1,10 @@
 # CHANGELOG
+## 0.0.9
+
+* Switched to pyisckea from pykeadhcp
+
+* Updated pynetbox & click
+
 ## 0.0.8
 
 * Add basic authentication for kea api
