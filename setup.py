@@ -28,8 +28,9 @@ setup(
     ],
     install_requires=[
         'click~=8.5',
+        'httpx~=0.28',
         'pyisckea~=0.9.2',
-        'pynetbox~=7.',
+        'pynetbox~=7.8',
             ],
     package_data={
     },
