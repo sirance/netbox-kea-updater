@@ -1,6 +1,7 @@
 from datetime import datetime
 from pyisckea import Kea
 from pyisckea.parsers.dhcp4 import Dhcp4Parser
+from httpx import BasicAuth
 import pynetbox
 import click
 
@@ -47,7 +48,9 @@ def processleases(ctx, netbox_url, netbox_token, kea_url, kea_port, kea_username
     )
 
     # Connect to the Kea Agent endpoint
-    server = Kea(host=kea_url, port=kea_port, use_basic_auth=True, username=kea_username, password=kea_password)
+    kea_url = f"{kea_url}:{kea_port}"
+    auth = BasicAuth(kea_username, kea_password)
+    server = Kea(kea_url, auth=auth)
 
     format_string = "%Y-%m-%d %H:%M:%S"
     kea_ips = []
@@ -160,8 +163,8 @@ def processleases(ctx, netbox_url, netbox_token, kea_url, kea_port, kea_username
             nb_ip = i.address.split('/')[0]
             if nb_ip not in kea_ips:
                 if ctx.obj['VERBOSE']:
-                    print(f"IP address: {nb_ip}"
-                          "no longer leased removing from netbox.")
+                    print(f"IP address: {nb_ip} "
+                          "no longer leased, removing from netbox.")
 
                 x = nb.ipam.ip_addresses.get(address=i.address)
                 if x.custom_fields['dhcp_reservation_hw_address'] is None:

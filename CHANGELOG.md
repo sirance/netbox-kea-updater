@@ -1,4 +1,11 @@
 # CHANGELOG
+
+## 0.0.10
+
+* Updated missed entry for old pykeadhcp name
+
+* Updated auth to use httpx, as recommended in pyisckea docs.
+
 ## 0.0.9
 
 * Switched to pyisckea from pykeadhcp
